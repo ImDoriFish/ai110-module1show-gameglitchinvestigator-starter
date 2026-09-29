@@ -33,11 +33,16 @@ It wrote the code, ran away, and now the game is unplayable.
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Run `python -m streamlit run app.py`. It opens on Normal: range 1 to 50, 8 attempts.
+2. Guess above the secret and the hint says "Go LOWER". Guess below and it says "Go HIGHER". It stays correct every turn.
+3. You can open "Developer Debug Info" to see the secret to double check.
+4. Type `abc` and submit. You get an error and lose no attempt.
+5. Type `500` and submit. You get "Enter a number between 1 and 50" and lose no attempt.
+6. Type `3.7` and submit. You get "Enter a whole number, not a decimal" and lose no attempt.
+7. You can change the difficulty, and the amount of attempts and the range will vary.
+8. Win a round, and you will receive a certain amount of points based on the number of guesses. The fewest guesses gives the highest points.
+9. Lose a round, the game will present the secret and stop accepting new guesses.
+10. Press "New Game" to restart for a new session. Everything including score, history and attempts will be reset, and the new secret will be generated based on the current difficulty.
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 

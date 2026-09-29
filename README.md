@@ -43,11 +43,64 @@ Describe your fixed game in numbered steps so a reader can follow along without 
 
 ## 🧪 Test Results
 
+The suite started as the 3 provided tests, which could not run at all until the
+logic was refactored out of `app.py` into `logic_utils.py` — they import from
+`logic_utils`, and importing `app.py` executes Streamlit code at module level.
+It now stands at 23 tests, with a regression test for each bug that was fixed.
+
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+$ .venv/Scripts/python.exe -m pytest tests/ -v
+
+============================= test session starts =============================
+platform win32 -- Python 3.13.0, pytest-9.1.1, pluggy-1.6.0
+rootdir: ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.15.1
+collected 23 items
+
+tests/test_game_logic.py::test_winning_guess PASSED                      [  4%]
+tests/test_game_logic.py::test_guess_too_high PASSED                     [  8%]
+tests/test_game_logic.py::test_guess_too_low PASSED                      [ 13%]
+tests/test_game_logic.py::test_too_high_tells_player_to_go_lower PASSED  [ 17%]
+tests/test_game_logic.py::test_too_low_tells_player_to_go_higher PASSED  [ 21%]
+tests/test_game_logic.py::test_win_message_does_not_give_a_direction PASSED [ 26%]
+tests/test_game_logic.py::test_label_and_message_agree PASSED            [ 30%]
+tests/test_game_logic.py::test_single_digit_guess_below_three_digit_secret PASSED [ 34%]
+tests/test_game_logic.py::test_three_digit_guess_above_single_digit_secret PASSED [ 39%]
+tests/test_game_logic.py::test_win_is_detected_for_equal_numbers PASSED  [ 43%]
+tests/test_game_logic.py::test_easy_range PASSED                         [ 47%]
+tests/test_game_logic.py::test_normal_range PASSED                       [ 52%]
+tests/test_game_logic.py::test_hard_range PASSED                         [ 56%]
+tests/test_game_logic.py::test_unknown_difficulty_falls_back_to_normal PASSED [ 60%]
+tests/test_game_logic.py::test_ranges_grow_with_difficulty PASSED        [ 65%]
+tests/test_game_logic.py::test_every_difficulty_is_winnable PASSED       [ 69%]
+tests/test_game_logic.py::test_wrong_guesses_always_lose_points PASSED   [ 73%]
+tests/test_game_logic.py::test_both_wrong_outcomes_are_scored_the_same PASSED [ 78%]
+tests/test_game_logic.py::test_win_on_first_guess_pays_full_bonus PASSED [ 82%]
+tests/test_game_logic.py::test_win_bonus_drops_by_ten_per_guess PASSED   [ 86%]
+tests/test_game_logic.py::test_winning_earlier_always_scores_higher PASSED [ 91%]
+tests/test_game_logic.py::test_slow_win_still_pays_the_minimum PASSED    [ 95%]
+tests/test_game_logic.py::test_unknown_outcome_leaves_the_score_alone PASSED [100%]
+
+============================= 23 passed in 0.04s ==============================
 ```
+
+### Which test covers which bug
+
+| Bug | Test | What it catches |
+|-----|------|-----------------|
+| #1 — hint messages swapped | `test_too_high_tells_player_to_go_lower`, `test_too_low_tells_player_to_go_higher`, `test_label_and_message_agree` | The 3 provided tests only check the outcome label, so they passed against the broken code. These check the message the player actually reads. |
+| #2 — secret cast to `str` | `test_single_digit_guess_below_three_digit_secret`, `test_win_is_detected_for_equal_numbers` | String comparison made `"9" > "100"` true, and `49 == "49"` false, so a correct guess was not a win. |
+| #3 — `try/except TypeError` removed | (covered by the Bug #2 tests) | A bad type now fails loudly instead of silently returning a wrong answer. |
+| #12 — difficulty ranges | `test_ranges_grow_with_difficulty`, `test_every_difficulty_is_winnable` | Hard was 1–50 with 5 attempts, but binary search needs 6 — it was unwinnable. This test fails against the old values. |
+| #13 — wrong guess added points | `test_wrong_guesses_always_lose_points`, `test_both_wrong_outcomes_are_scored_the_same` | `"Too High"` gained 5 points on even attempts. The tests loop over attempts 1–10, because a single odd-numbered call would have passed. |
+| #14 — win bonus off by one | `test_win_on_first_guess_pays_full_bonus`, `test_winning_earlier_always_scores_higher` | A first-guess win paid 80 instead of 90. |
+
+### What the tests do not cover
+
+Everything in `app.py` — the session-state wiring, the New Game button, the
+difficulty-change handling. pytest cannot import `app.py` outside a running
+Streamlit session, so those fixes (bugs #4, #5, #6, #7, #8, #9, #10, #11, #15,
+#18) were verified by hand in the browser instead.
 
 ## 🚀 Stretch Features
 

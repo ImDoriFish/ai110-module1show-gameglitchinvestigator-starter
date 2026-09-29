@@ -12,18 +12,27 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 Document at least 3 bugs you found. Add rows as needed.
 
-| Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Input            | Expected Behavior                       | Actual Behavior         | Console Output / Error |
+|------------------|-----------------------------------------|-------------------------|------------------------|
+|input 20, 10, 40, |It should give lower or higher           |Always give the inverse  | Wrong hint/suspected in|
+|etc               | as the number change                    |hint                     |app.py,check_guess      |
+|                  |                                         |                         |                        |
+|input New Game,   |It should start a new game and           |Doesn't start a new game |Doesn't start the game  |
+|10.               |read in new input for new game           | or read in input        |(app.py, l.130)         |
+|                  |                                         |                         |                        |
+|input easy, normal|The text: "Guess a number between"       |It doesn't change always |the error maybe in app.py|
+|difficult.        |should change according to the difficulty|state "1 to 100"         |l.109                    |
+
+
 
 ---
 
 ## 2. How did you use AI as a teammate?
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
+  //I use Claude for this.
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
+  // 
 - Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
 
 ---
